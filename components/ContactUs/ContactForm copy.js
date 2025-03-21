@@ -177,6 +177,35 @@ const ContactForm = () => {
             <p className="text-red-500 text-sm">{errors.organisation}</p>
           )}
         </div>
+        <div className="mb-6">
+          <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              name="updates"
+              checked={formData.updates}
+              onChange={handleChange}
+              className="form-checkbox h-4 w-4 text-cms-primary"
+            />
+           <span className="ml-2 text-gray-700">
+  I would like to get a <span className="font-semibold">Demo</span> and a <span className="font-semibold">Sample Report</span>
+</span>
+</label>
+        </div>
+
+        {/* Message Field */}
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-5">Message</label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            rows={4}
+            className="w-full p-3 border border-gray-100 shadow-md rounded-sm"
+          />
+          {errors.message && (
+            <p className="text-red-500 text-sm">{errors.message}</p>
+          )}
+        </div>
 
         <div className="flex justify-center">
           <button
