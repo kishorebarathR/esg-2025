@@ -18,23 +18,28 @@ export default function ContactForm({ fields, form, type, btn, bg }) {
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [loading, setLoading] = useState(false)
-  const [showModal, setShowModal] = useState(false) // State to control modal visibility
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     if (showModal) {
-      document.body.style.overflow = "hidden" // Disable scrolling
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "auto" // Restore scrolling
+      document.body.style.overflow = "auto"
     }
 
     return () => {
-      document.body.style.overflow = "auto" // Ensure scrolling is enabled when unmounted
+      document.body.style.overflow = "auto"
     }
   }, [showModal])
 
   const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     return re.test(String(email).toLowerCase())
+  }
+
+  const validatePhoneNumber = (phone) => {
+    const re = /^[0-9]{10}$/ // Adjust if you want to support +91 or other formats
+    return re.test(String(phone))
   }
 
   const handleFormSubmit = async (e) => {
@@ -49,6 +54,10 @@ export default function ContactForm({ fields, form, type, btn, bg }) {
 
     if (formData.email && !validateEmail(formData.email)) {
       newErrors.email = "Invalid email address"
+    }
+
+    if (formData.phone && !validatePhoneNumber(formData.phone)) {
+      newErrors.phone = "Invalid phone number"
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -72,7 +81,7 @@ export default function ContactForm({ fields, form, type, btn, bg }) {
       )
 
       setSuccessMessage("Thank you for contacting us.")
-      setShowModal(true) // Show modal on success
+      setShowModal(true)
       setFormData(
         fields.reduce(
           (acc, field) => {
@@ -105,52 +114,79 @@ export default function ContactForm({ fields, form, type, btn, bg }) {
         onSubmit={handleFormSubmit}
       >
         <div className={`grid grid-cols-${form} gap-4`}>
-          {fields.map((field) => (
-            <div
-              key={field.id}
-              className={`${
-                field.type === "textarea"
-                  ? "col-span-2"
-                  : "flex flex-col w-full"
-              }`}
-            >
-              <label htmlFor={field.id} className="text-white">
-                {field.label}
-              </label>
-              {field.type === "textarea" ? (
-                <TextAreaField
-                  id={field.id}
-                  value={formData[field.id]}
-                  onChange={handleChange}
-                  className="text-black"
-                />
-              ) : (
-                <InputField
-                  type={field.type}
-                  id={field.id}
-                  value={formData[field.id]}
-                  onChange={handleChange}
-                />
-              )}
-              {errors[field.id] && (
-                <span className="text-red-500 text-sm">{errors[field.id]}</span>
-              )}
-            </div>
-          ))}
+          {fields.map((field) => {
+            if (field.id === "spacer") {
+              return <div key={field.id} className="h-4 w-full" />
+            }
+
+            return (
+              <div
+                key={field.id}
+                className={`${
+                  field.type === "textarea"
+                    ? "col-span-2"
+                    : "flex flex-col w-full"
+                }`}
+              >
+                <label htmlFor={field.id} className="text-white mb-1 text-md">
+                  {field.type !== "checkbox" && field.label}
+                </label>
+
+                {field.type === "textarea" ? (
+                  <TextAreaField
+                    id={field.id}
+                    value={formData[field.id]}
+                    onChange={handleChange}
+                    className="text-black"
+                  />
+                ) : field.type === "checkbox" ? (
+                  <label className="inline-flex items-center mt-2 text-white">
+                    <input
+                      type="checkbox"
+                      id={field.id}
+                      checked={formData[field.id]}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          [field.id]: e.target.checked,
+                        }))
+                      }
+                      className="form-checkbox h-5 w-5 text-[#216559] mr-2"
+                    />
+                    {field.label}
+                  </label>
+                ) : (
+                  <InputField
+                    type={field.type}
+                    id={field.id}
+                    value={formData[field.id]}
+                    onChange={handleChange}
+                  />
+                )}
+
+                {errors[field.id] && (
+                  <span className="text-red-500 text-sm">
+                    {errors[field.id]}
+                  </span>
+                )}
+              </div>
+            )
+          })}
         </div>
         <div className="text-center mt-8">
           <button
             type="submit"
             className={`px-4 py-2 ${bg} rounded ${btn} text-lg sm:text-xl`}
+            disabled={loading}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </form>
 
       {/* Modal Popup */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="relative bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
             {/* X Close Button */}
             <button
