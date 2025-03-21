@@ -38,7 +38,7 @@ const Page = () => {
       {/* Desktop Image */}
       <div className="hidden sm:block mt-16">
         <Image
-          src="/reporting/reporting-desktop-bg-img.png"
+          src="/reporting/Bg-img-Reporting.png"
           alt="ESG Reporting Desktop"
           className="w-full h-auto"
           width={1400}
