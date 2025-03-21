@@ -44,7 +44,6 @@ const Contact = React.forwardRef((props, ref) => {
           </h4>
         </div>
 
-        {/* Contact Form */}
         <div className="w-full lg:w-8/12">
           <ContactForm
             fields={formData.fields}
