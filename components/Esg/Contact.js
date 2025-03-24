@@ -231,7 +231,7 @@ const ContactForm = () => {
 
       {/* Modal Popup */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-2 lg:px-1 z-40">
           <div className="relative bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
             {/* X Close Button */}
             <button
