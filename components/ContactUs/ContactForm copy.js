@@ -189,8 +189,8 @@ const ContactForm = () => {
               className="form-checkbox h-4 w-4 text-cms-primary"
             />
             <span className="ml-2 text-gray-700">
-              I would like to get a <span className="font-semibold">Demo</span>{" "}
-              and a <span className="font-semibold">Sample Report</span>
+              I would like to get a <span className="font-semibold px-1">Demo</span>
+             
             </span>
           </label>
         </div>
