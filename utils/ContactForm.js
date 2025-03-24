@@ -106,7 +106,6 @@ export default function ContactForm({ fields, form, type, btn, bg }) {
       [id]: value,
     }))
   }
-
   return (
     <>
       <form

@@ -1,4 +1,5 @@
 "use client"
+"use client"
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { IoMdClose } from "react-icons/io"
@@ -10,6 +11,8 @@ const ContactForm = () => {
     phoneNumber: "",
     email: "",
     organisation: "",
+    message: "",
+    updates: false, 
   })
 
   const [errors, setErrors] = useState({})
@@ -17,23 +20,19 @@ const ContactForm = () => {
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-    if (showModal) {
-      document.body.style.overflow = "hidden" // Disable scrolling when modal opens
-    } else {
-      document.body.style.overflow = "auto" // Enable scrolling when modal closes
-    }
+    document.body.style.overflow = showModal ? "hidden" : "auto"
   }, [showModal])
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     })
 
-    // Remove error message when user starts typing
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [e.target.name]: "",
+      [name]: "",
     }))
   }
 
@@ -43,20 +42,21 @@ const ContactForm = () => {
 
     // Validate empty fields
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (
+        key !== "updates" && // optional checkbox
+        !formData[key]
+      ) {
         newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} is required.`
       }
     })
 
-    // Phone number validation (only numbers and max 13 digits)
     const phoneNumberRegex = /^[0-9]+$/
     if (formData.phoneNumber && !phoneNumberRegex.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Phone number must only contain numbers."
-    } else if (formData.phoneNumber && formData.phoneNumber.length > 13) {
+    } else if (formData.phoneNumber.length > 13) {
       newErrors.phoneNumber = "Phone number cannot be longer than 13 digits."
     }
 
-    // Set errors if any
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
@@ -87,6 +87,8 @@ const ContactForm = () => {
           phoneNumber: "",
           email: "",
           organisation: "",
+          message: "",
+          updates: false,
         })
         setErrors({})
       } else {
@@ -186,10 +188,11 @@ const ContactForm = () => {
               onChange={handleChange}
               className="form-checkbox h-4 w-4 text-cms-primary"
             />
-           <span className="ml-2 text-gray-700">
-  I would like to get a <span className="font-semibold">Demo</span> and a <span className="font-semibold">Sample Report</span>
-</span>
-</label>
+            <span className="ml-2 text-gray-700">
+              I would like to get a <span className="font-semibold">Demo</span>{" "}
+              and a <span className="font-semibold">Sample Report</span>
+            </span>
+          </label>
         </div>
 
         {/* Message Field */}
